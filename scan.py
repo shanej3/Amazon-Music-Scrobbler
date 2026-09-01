@@ -29,5 +29,6 @@ async def get_media_info():
         "status": status_map.get(playback_info.playback_status, "Unknown"),
         "app": current_session.source_app_user_model_id
     }
-    
+
     return info
+
