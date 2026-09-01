@@ -1,5 +1,4 @@
 import os 
-import asyncio
 import time
 from dotenv import load_dotenv
 import pylast
