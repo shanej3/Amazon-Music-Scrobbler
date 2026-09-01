@@ -2,6 +2,7 @@ import os
 import time
 from dotenv import load_dotenv
 import pylast
+import webbrowser
 
 load_dotenv()
 
@@ -24,9 +25,6 @@ async def get_network():
     )
     return network
 
-import webbrowser
-import pylast
-
 async def get_new_session_key(api_key: str, api_secret: str) -> str:
     network = pylast.LastFMNetwork(
         api_key=api_key,
@@ -48,7 +46,7 @@ async def get_new_session_key(api_key: str, api_secret: str) -> str:
     # Exchange authorization for session key
     try:
         session_key = sg.get_web_auth_session_key(auth_url)
-        print(f"Successfully obtained session key: {session_key}")
+        print(f"Successfully obtained session key")
         
         # Read .env file and check if LASTFM_SESSION_KEY already exists
         env_path = ".env"
@@ -80,6 +78,7 @@ async def get_new_session_key(api_key: str, api_secret: str) -> str:
         print("Session key saved to .env")
         
         return session_key
+    
     except pylast.WSError as e:
         print(f"Failed to fetch session key: {e}")
         return None
