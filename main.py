@@ -1,14 +1,20 @@
 import asyncio
 from scan import get_media_info
+from config import get_network
 
 async def main():
+    network = await get_network()
+    
     while True:
         media_info = await get_media_info()
         if await is_valid_track(media_info):
-            print(f"[{media_info['status']}] {media_info['title']} - {media_info['artist']}")
+            network.update_now_playing(
+            artist=media_info['artist'],
+            title=media_info['title'],
+        )
 
-        # Scan every 1 second
-        await asyncio.sleep(1)
+        # Scan every 30 seconds
+        await asyncio.sleep(30)
 
 async def is_valid_track(info):
     # Reject if any field is missing
