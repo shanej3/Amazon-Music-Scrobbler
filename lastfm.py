@@ -30,7 +30,7 @@ async def attempt_to_scrobble(network):
             print(f"[INFO] New track detected: {scanned_track['artist']} - {scanned_track['title']}")
             current_track = scanned_track
             times_scanned = 1
-            return
+        return
     times_scanned += 1
 
 async def scrobble_track(network, track):
