@@ -21,17 +21,17 @@ async def attempt_to_scrobble(network):
         return
 
     # if track has been scanned 4 times and is different from the current track, scrobble it
-    if await is_valid_track(scanned_track):
-        if current_track != scanned_track:
+    if current_track != scanned_track:
+        if times_scanned > 4:
+            await scrobble_track(network, current_track)
+            print(f"[INFO] Scrobbled track: {current_track['artist']} - {current_track['title']}")
+
+        if await is_valid_track(scanned_track):
             print(f"[INFO] New track detected: {scanned_track['artist']} - {scanned_track['title']}")
-            if times_scanned > 4:
-                await scrobble_track(network, current_track)
-                print(f"[INFO] Scrobbled track: {current_track['artist']} - {current_track['title']}")
             current_track = scanned_track
             times_scanned = 1
-        else:
-            times_scanned += 1
-    return
+            return
+    times_scanned += 1
 
 async def scrobble_track(network, track):
     network.scrobble(
