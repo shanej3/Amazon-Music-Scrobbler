@@ -7,6 +7,7 @@ async def main():
     
     while True:
         await lastfm.update_now_playing(network)
+        await lastfm.attempt_to_scrobble(network)
 
         # Scan every 15 seconds
         await asyncio.sleep(15)

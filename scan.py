@@ -10,7 +10,7 @@ async def get_media_info():
     current_session = manager.get_current_session()
     
     if not current_session:
-        print("No active media sessions found.")
+        print("[WARN] No active media sessions found.")
         return None
 
     # Fetch track metadata and playback state

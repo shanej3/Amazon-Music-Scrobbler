@@ -35,18 +35,18 @@ async def get_new_session_key(api_key: str, api_secret: str) -> str:
     sg = pylast.SessionKeyGenerator(network)
     auth_url = sg.get_web_auth_url()
 
-    print("Opening browser for Last.fm authorization...")
+    print("[INFO] Opening browser for Last.fm authorization...")
     webbrowser.open(auth_url)
     
-    print("\nAuthorizing in browser... waiting 15 seconds to complete authorization.")
+    print("\n[INFO] Authorizing in browser... waiting 15 seconds to complete authorization.")
     for i in range(15, 0, -1):
-        print(f"Time remaining: {i}s", end='\r')
+        print(f"[INFO] Time remaining: {i}s", end='\r')
         time.sleep(1)
 
     # Exchange authorization for session key
     try:
         session_key = sg.get_web_auth_session_key(auth_url)
-        print(f"Successfully obtained session key")
+        print(f"[INFO] Successfully obtained session key")
         
         # Read .env file and check if LASTFM_SESSION_KEY already exists
         env_path = ".env"
@@ -75,10 +75,10 @@ async def get_new_session_key(api_key: str, api_secret: str) -> str:
         # Reload the environment so SESSION_KEY gets updated
         load_dotenv(override=True)
         verify_key = os.getenv("LASTFM_SESSION_KEY")
-        print("Session key saved to .env")
+        print(f"[INFO] Session key saved to .env")
         
         return session_key
     
     except pylast.WSError as e:
-        print(f"Failed to fetch session key: {e}")
+        print(f"[ERROR] Failed to fetch session key: {e}")
         return None
