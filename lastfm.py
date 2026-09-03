@@ -5,22 +5,25 @@ times_scanned = 0
 current_track = None
 
 async def update_now_playing(network): 
-    media_info = await scan.get_media_info()
+    track_info = await scan.get_track_info()
     
-    if await is_valid_track(media_info):
+    if await is_valid_track(track_info):
         network.update_now_playing(
-            artist=media_info['artist'],
-            title=media_info['title'],
+            artist=track_info['artist'],
+            title=track_info['title'],
         )
 
 async def attempt_to_scrobble(network):
     global current_track, times_scanned
-    scanned_track = await scan.get_media_info()
+    scanned_track = await scan.get_track_info()
+
+    if await is_amazon_music(scanned_track) is False:
+        return
 
     if scanned_track["status"] != "Playing":
         return
 
-    # if track has been scanned 4 times and is different from the current track, scrobble it
+    # if track has been scanned 4 times and is different from the newly scanned track, scrobble it
     if current_track != scanned_track:
         if times_scanned > 4:
             await scrobble_track(network, current_track)
@@ -40,17 +43,18 @@ async def scrobble_track(network, track):
         timestamp=int(datetime.datetime.now().timestamp())
     )
     
-async def is_valid_track(info):
-    # reject if not Amazon Music
-    app = info.get("app", "").lower()
-    if not ("amazon" in app and "music" in app):
-        print(f"[WARN] Track not scrobbled, invalid app:: {info.get('app')}")
-        return False 
-
+async def is_valid_track(track_info):
     # Reject if any field is missing
     required_fields = ["title", "artist", "status"]
     for field in required_fields:
-        if not info.get(field):
-            print(f"[WARN] Track not scrobbled, missing {field}.")
+        if not track_info.get(field):
+            print(f"[WARN] Track not valid, missing {field}.")
             return False
     return True
+
+async def is_amazon_music(track_info):
+     # reject if not Amazon Music
+    app = track_info.get("app", "").lower()
+    if not ("amazon" in app and "music" in app):
+        print(f"[WARN] Track not valid, invalid app: {track_info.get('app')}")
+        return False 

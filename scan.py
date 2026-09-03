@@ -3,7 +3,7 @@ from winrt.windows.media.control import (
     GlobalSystemMediaTransportControlsSessionPlaybackStatus as PlaybackStatus,
 )
 
-async def get_media_info():
+async def get_track_info():
     # Request access to the system media controls manager
     manager = await MediaManager.request_async()
 
